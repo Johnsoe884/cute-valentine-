@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surprise! ❤️</title>
+    <title>Surprise for Kim! ❤️</title>
     <style>
         body { 
             font-family: 'Arial', sans-serif; 
@@ -13,6 +13,7 @@
             overflow: hidden; 
             margin: 0;
             height: 100vh;
+            transition: background 0.8s ease;
         }
 
         #card { 
@@ -31,19 +32,25 @@
 
         @keyframes heartbeat {
             0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
+            50% { transform: scale(1.03); }
             100% { transform: scale(1); }
         }
 
-        h2 { color: #ff4d6d; line-height: 1.6; font-size: 20px; min-height: 100px; }
+        h2 { 
+            color: #ff4d6d; 
+            line-height: 1.6; 
+            font-size: 20px; 
+            min-height: 100px;
+            transition: opacity 0.3s ease;
+        }
 
         .btn-container { 
             margin-top: 20px; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            gap: 25px; 
-            height: 50px;
+            gap: 30px; 
+            height: 60px;
         }
 
         button { 
@@ -55,26 +62,34 @@
             transition: 0.3s; 
             font-weight: bold; 
             min-width: 100px;
+            outline: none;
         }
 
-        .yes { background-color: #ff4d6d; color: white; }
+        .yes { background-color: #ff4d6d; color: white; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3); }
         .yes:hover { transform: scale(1.1); box-shadow: 0 0 20px rgba(255, 77, 109, 0.6); }
 
-        .no { background-color: #adb5bd; color: white; position: relative; transition: 0.1s; }
+        /* No button starts in relative position */
+        .no { 
+            background-color: #adb5bd; 
+            color: white; 
+            position: relative; 
+            transition: 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
         .final-img {
             display: block;
-            margin: 15px auto;
+            margin: 20px auto;
             max-width: 100%;
+            height: auto;
             border-radius: 20px;
             animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Floating Hearts Animation */
+        /* Heart Rain Styles */
         .heart {
             position: fixed;
             top: -10vh;
-            font-size: 2rem;
+            font-size: 1.5rem;
             color: #ff4d6d;
             user-select: none;
             z-index: 5;
@@ -95,7 +110,7 @@
 
 <div id="card">
     <h2 id="display-text">ဟေး... မင်းအတွက် Surprise တစ်ခုရှိတယ်... ကြည့်မလား? 🎁</h2>
-    <div id="btn-container" class="btn-container">
+    <div id="btn-container">
         <button class="yes" id="yesBtn" onclick="handleYes()">Yes</button>
         <button class="no" id="noBtn" onclick="handleNo()" onmouseover="moveNo()">No</button>
     </div>
@@ -114,7 +129,11 @@
         else if (step === 5) { text.innerText = "စကားမစပ်... ကိုယ့်အပြုံးတွေကို ဘယ်သူဖန်တီးပေးတာလဲ သိလား? (Hint: မင်းပဲ! 🫵)"; }
         else if (step === 6) { text.innerText = "မေးခွန်းတွေက ပိုပြီး စိတ်လှုပ်ရှားဖို့ ကောင်းလာပြီနော်... အဆင်သင့်ပဲလား?"; }
         else if (step === 7) { text.innerText = "ကိုယ် မင်းကို တစ်ခုခု တောင်းဆိုချင်လို့... ရမလား?"; }
-        else if (step === 8) { text.innerText = "ဒီနှစ် Valentine မှာ ကိုယ့်ရဲ့ တစ်ဦးတည်းသော Valentine ဖြစ်ပေးနိုင်မလား? 💖"; }
+        else if (step === 8) { 
+            text.innerText = "ဒီနှစ် Valentine မှာ ကိုယ့်ရဲ့ တစ်ဦးတည်းသော Valentine ဖြစ်ပေးနိုင်မလား? 💖";
+            // Ensure button is ready to move
+            document.getElementById('noBtn').style.position = 'fixed';
+        }
         else if (step === 9) { showFinal(); }
     }
 
@@ -126,20 +145,32 @@
             "မသိရင် အခုသိအောင် ပြောပြနေတာလေ!",
             "မိသွားပြီ! No လို့ နှိပ်လို့မရတော့ဘူးလေ... Yes ပဲ ရှိတော့တယ်! 😜"
         ];
-        alert(alerts[Math.min(step - 1, 4)]);
+        
+        if (step < 8) {
+            alert(alerts[Math.min(step - 1, 3)]);
+        } else {
+            alert(alerts[4]);
+        }
     }
 
     function moveNo() {
         if (step >= 8) {
             const noBtn = document.getElementById('noBtn');
-            const padding = 20;
-            // Limit the movement within the visible screen area
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - padding);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - padding);
+            
+            // Define Safe Zone Padding
+            const padding = 50; 
+            
+            // Calculate real available space on the device screen
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+            // Generate coordinates within the visible screen area
+            const randomX = Math.floor(Math.random() * (maxX - padding)) + padding;
+            const randomY = Math.floor(Math.random() * (maxY - padding)) + padding;
             
             noBtn.style.position = 'fixed';
-            noBtn.style.left = Math.max(padding, x) + 'px';
-            noBtn.style.top = Math.max(padding, y) + 'px';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
         }
     }
 
@@ -148,15 +179,18 @@
         heart.classList.add('heart');
         heart.innerHTML = '❤️';
         heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
-        heart.style.opacity = Math.random();
+        heart.style.animationDuration = (Math.random() * 2 + 3) + 's'; // 3-5 seconds
+        heart.style.opacity = Math.random() * 0.5 + 0.5; // Random transparency
         document.body.appendChild(heart);
+        
+        // Remove heart after animation ends to save memory
         setTimeout(() => heart.remove(), 5000);
     }
 
     function showFinal() {
         document.body.style.background = "#ff4d6d";
-        setInterval(createHeart, 300); // Start heart rain
+        setInterval(createHeart, 200); // Start the heart rain celebration
+        
         const card = document.getElementById('card');
         card.innerHTML = `
             <h2 style="color:#ff4d6d">Yayyy! I knew it! 🥰❤️</h2>
