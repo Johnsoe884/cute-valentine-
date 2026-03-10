@@ -5,27 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surprise! ❤️</title>
     <style>
-        /* Base Styles */
         body { 
             font-family: 'Arial', sans-serif; 
             background-color: #fff0f3; 
             text-align: center; 
             padding-top: 10vh; 
             overflow: hidden; 
-            transition: background 0.8s ease;
+            margin: 0;
+            height: 100vh;
         }
 
-        /* Card Animation: Gentle Pulse */
         #card { 
             background: white; 
             padding: 40px; 
             border-radius: 30px; 
             display: inline-block; 
             box-shadow: 0 10px 30px rgba(255,77,109,0.2); 
-            max-width: 420px; 
+            max-width: 400px; 
             width: 85%; 
             border: 2px solid #ffccd5; 
             position: relative;
+            z-index: 10;
             animation: heartbeat 3s infinite ease-in-out;
         }
 
@@ -35,36 +35,17 @@
             100% { transform: scale(1); }
         }
 
-        /* Text Animation: Smooth Fade In */
-        h2 { 
-            color: #ff4d6d; 
-            line-height: 1.6; 
-            font-size: 20px; 
-            min-height: 100px; 
-            transition: opacity 0.3s ease;
-        }
+        h2 { color: #ff4d6d; line-height: 1.6; font-size: 20px; min-height: 100px; }
 
-        .fade-in {
-            animation: fadeInSlide 0.5s ease forwards;
-        }
-
-        @keyframes fadeInSlide {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Button Container and Gap */
         .btn-container { 
             margin-top: 20px; 
-            position: relative; 
-            height: 150px; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             gap: 25px; 
+            height: 50px;
         }
 
-        /* Button Styles & Hover Glow */
         button { 
             font-size: 18px; 
             padding: 12px 30px; 
@@ -73,36 +54,35 @@
             border: none; 
             transition: 0.3s; 
             font-weight: bold; 
-            min-width: 100px; 
-            outline: none;
+            min-width: 100px;
         }
 
-        .yes { 
-            background-color: #ff4d6d; 
-            color: white; 
-            z-index: 20; 
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
-        }
+        .yes { background-color: #ff4d6d; color: white; }
+        .yes:hover { transform: scale(1.1); box-shadow: 0 0 20px rgba(255, 77, 109, 0.6); }
 
-        .yes:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(255, 77, 109, 0.6);
-            background-color: #ff3355;
-        }
-
-        .no { 
-            background-color: #adb5bd; 
-            color: white; 
-            position: relative; 
-        }
+        .no { background-color: #adb5bd; color: white; position: relative; transition: 0.1s; }
 
         .final-img {
             display: block;
             margin: 15px auto;
             max-width: 100%;
-            height: auto;
             border-radius: 20px;
             animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Floating Hearts Animation */
+        .heart {
+            position: fixed;
+            top: -10vh;
+            font-size: 2rem;
+            color: #ff4d6d;
+            user-select: none;
+            z-index: 5;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
         }
 
         @keyframes popIn {
@@ -114,7 +94,7 @@
 <body>
 
 <div id="card">
-    <h2 id="display-text" class="fade-in">ဟေး... မင်းအတွက် Surprise တစ်ခုရှိတယ်... ကြည့်မလား? 🎁</h2>
+    <h2 id="display-text">ဟေး... မင်းအတွက် Surprise တစ်ခုရှိတယ်... ကြည့်မလား? 🎁</h2>
     <div id="btn-container" class="btn-container">
         <button class="yes" id="yesBtn" onclick="handleYes()">Yes</button>
         <button class="no" id="noBtn" onclick="handleNo()" onmouseover="moveNo()">No</button>
@@ -124,64 +104,68 @@
 <script>
     let step = 1;
 
-    function updateText(newText) {
-        const textElement = document.getElementById('display-text');
-        // Remove animation class
-        textElement.classList.remove('fade-in');
-        // Trigger reflow to restart animation
-        void textElement.offsetWidth; 
-        // Add text and animation class back
-        textElement.innerText = newText;
-        textElement.classList.add('fade-in');
-    }
-
     function handleYes() {
+        const text = document.getElementById('display-text');
         step++;
 
-        if (step === 2) { updateText("ဒီဂိမ်းလေးကို အဆုံးထိဆော့ပေးမယ်လို့ ကတိပေးလား? 🤙"); } 
-        else if (step === 3) { updateText("တကယ်တော့... မင်းက ကိုယ့်အတွက် အရမ်းထူးခြားတဲ့သူပါ ❤️"); } 
-        else if (step === 4) { updateText("ကိုယ်တို့ နှစ်ယောက် အတူတူရှိတဲ့အချိန်တိုင်း စိတ်ချမ်းသာရတယ်... ဒါကိုရော သိလား? 😊"); }
-        else if (step === 5) { updateText("စကားမစပ်... ကိုယ့်အပြုံးတွေကို ဘယ်သူဖန်တီးပေးတာလဲ သိလား? (Hint: မင်းပဲ! 🫵)"); }
-        else if (step === 6) { updateText("မေးခွန်းတွေက ပိုပြီး စိတ်လှုပ်ရှားဖို့ ကောင်းလာပြီနော်... အဆင်သင့်ပဲလား?"); }
-        else if (step === 7) { updateText("ကိုယ် မင်းကို တစ်ခုခု တောင်းဆိုချင်လို့... ရမလား?"); }
-        else if (step === 8) { updateText("ဒီနှစ် Valentine မှာ ကိုယ့်ရဲ့ တစ်ဦးတည်းသော Valentine ဖြစ်ပေးနိုင်မလား? 💖"); }
+        if (step === 2) { text.innerText = "ဒီဂိမ်းလေးကို အဆုံးထိဆော့ပေးမယ်လို့ ကတိပေးလား? 🤙"; } 
+        else if (step === 3) { text.innerText = "တကယ်တော့... မင်းက ကိုယ့်အတွက် အရမ်းထူးခြားတဲ့သူပါ ❤️"; } 
+        else if (step === 4) { text.innerText = "ကိုယ်တို့ နှစ်ယောက် အတူတူရှိတဲ့အချိန်တိုင်း စိတ်ချမ်းသာရတယ်... ဒါကိုရော သိလား? 😊"; }
+        else if (step === 5) { text.innerText = "စကားမစပ်... ကိုယ့်အပြုံးတွေကို ဘယ်သူဖန်တီးပေးတာလဲ သိလား? (Hint: မင်းပဲ! 🫵)"; }
+        else if (step === 6) { text.innerText = "မေးခွန်းတွေက ပိုပြီး စိတ်လှုပ်ရှားဖို့ ကောင်းလာပြီနော်... အဆင်သင့်ပဲလား?"; }
+        else if (step === 7) { text.innerText = "ကိုယ် မင်းကို တစ်ခုခု တောင်းဆိုချင်လို့... ရမလား?"; }
+        else if (step === 8) { text.innerText = "ဒီနှစ် Valentine မှာ ကိုယ့်ရဲ့ တစ်ဦးတည်းသော Valentine ဖြစ်ပေးနိုင်မလား? 💖"; }
         else if (step === 9) { showFinal(); }
     }
 
     function handleNo() {
-        if (step === 1) { alert("အားအောင်လုပ်လိုက်ပါ... ခဏလေးပါပဲနော်! 😉"); } 
-        else if (step === 2) { alert("ကတိမပေးရင် ရှေ့ဆက်လို့မရဘူးလေ... Yes ပဲနှိပ်ပါ! 🥺"); } 
-        else if (step === 3) { alert("မထူးခြားဘူးလို့တော့ မပြောပါနဲ့... စိတ်မကောင်းဖြစ်သွားမယ်! ❤️"); }
-        else if (step === 4) { alert("မသိရင် အခုသိအောင် ပြောပြနေတာလေ... ဟဲဟဲ!"); }
-        else if (step === 5) { alert("မင်းမဟုတ်ရင် တခြားဘယ်သူရှိမှာလဲ? လိမ်မနေနဲ့နော်! 😂"); }
-        else if (step === 6) { alert("အဆင်သင့်မဖြစ်လည်း ဖြစ်အောင်လုပ်ရမှာပဲ! ရှေ့ဆက်သွားရအောင်... 🚀"); }
-        else if (step === 7) { alert("တောင်းဆိုတာကို မငြင်းပါနဲ့... နားထောင်ကြည့်ပါဦး! ✨"); }
-        else if (step >= 8) { alert("မိသွားပြီ! No လို့ နှိပ်လို့မရတော့ဘူးလေ... Yes ပဲ ရှိတော့တယ်! 😜❤️"); }
+        const alerts = [
+            "အားအောင်လုပ်လိုက်ပါ... ခဏလေးပါပဲနော်! 😉",
+            "ကတိမပေးရင် ရှေ့ဆက်လို့မရဘူးလေ... Yes ပဲနှိပ်ပါ! 🥺",
+            "မထူးခြားဘူးလို့တော့ မပြောပါနဲ့... ❤️",
+            "မသိရင် အခုသိအောင် ပြောပြနေတာလေ!",
+            "မိသွားပြီ! No လို့ နှိပ်လို့မရတော့ဘူးလေ... Yes ပဲ ရှိတော့တယ်! 😜"
+        ];
+        alert(alerts[Math.min(step - 1, 4)]);
     }
 
     function moveNo() {
         if (step >= 8) {
             const noBtn = document.getElementById('noBtn');
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            const padding = 20;
+            // Limit the movement within the visible screen area
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - padding);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - padding);
+            
             noBtn.style.position = 'fixed';
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
+            noBtn.style.left = Math.max(padding, x) + 'px';
+            noBtn.style.top = Math.max(padding, y) + 'px';
         }
+    }
+
+    function createHeart() {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.innerHTML = '❤️';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        heart.style.opacity = Math.random();
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
     }
 
     function showFinal() {
         document.body.style.background = "#ff4d6d";
+        setInterval(createHeart, 300); // Start heart rain
         const card = document.getElementById('card');
         card.innerHTML = `
-            <h2 style="color:#ff4d6d" class="fade-in">Yayyy! I knew it! 🥰❤️</h2>
-            <p style="font-weight:bold; color:#d63384" class="fade-in">ဖေဖော်ဝါရီ ၁၄ မှာ ဆုံမယ်နော် နတ်သမီးလေး!</p>
+            <h2 style="color:#ff4d6d">Yayyy! I knew it! 🥰❤️</h2>
+            <p style="font-weight:bold; color:#d63384">ဖေဖော်ဝါရီ ၁၄ မှာ ဆုံမယ်နော် နတ်သမီးလေး!</p>
             <img class="final-img" src="https://i.pinimg.com/736x/52/82/65/5282654c9291f66d10094fa0e30eba54.jpg">
-            <div style="margin-top:15px; font-size:12px; color:#aaa;">( အားကျသွားပြီလား 😉 )</div>
+            <div style="margin-top:15px; font-size:12px; color:#aaa;">( အလုပ်မရှိလို့ ပြီးတဲ့ထိနှိပ်နေတာလား 😉 )</div>
         `;
     }
 </script>
 
 </body>
 </html>
-
