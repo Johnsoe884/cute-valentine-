@@ -2,7 +2,7 @@
 <html lang="my">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Surprise for Kim! ❤️</title>
     <style>
         body { 
@@ -12,8 +12,10 @@
             padding-top: 10vh; 
             overflow: hidden; 
             margin: 0;
+            width: 100vw;
             height: 100vh;
             transition: background 0.8s ease;
+            position: fixed; /* Prevents bouncing/scrolling on mobile */
         }
 
         #card { 
@@ -36,12 +38,7 @@
             100% { transform: scale(1); }
         }
 
-        h2 { 
-            color: #ff4d6d; 
-            line-height: 1.6; 
-            font-size: 20px; 
-            min-height: 100px;
-        }
+        h2 { color: #ff4d6d; line-height: 1.6; font-size: 20px; min-height: 100px; }
 
         .btn-container { 
             margin-top: 20px; 
@@ -61,26 +58,17 @@
             transition: 0.3s; 
             font-weight: bold; 
             min-width: 100px;
-            outline: none;
+            touch-action: manipulation;
         }
 
         .yes { background-color: #ff4d6d; color: white; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3); }
-        .yes:hover { transform: scale(1.1); box-shadow: 0 0 20px rgba(255, 77, 109, 0.6); }
-
+        
         .no { 
             background-color: #adb5bd; 
             color: white; 
             position: relative; 
-            transition: 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .final-img {
-            display: block;
-            margin: 20px auto;
-            max-width: 100%;
-            height: auto;
-            border-radius: 20px;
-            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            transition: 0.1s ease-out; /* Faster transition so it doesn't lag behind the finger */
         }
 
         .heart {
@@ -88,7 +76,6 @@
             top: -10vh;
             font-size: 1.5rem;
             color: #ff4d6d;
-            user-select: none;
             z-index: 5;
             animation: fall linear forwards;
         }
@@ -97,9 +84,11 @@
             to { transform: translateY(110vh) rotate(360deg); }
         }
 
-        @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        .final-img {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+            border-radius: 20px;
         }
     </style>
 </head>
@@ -109,7 +98,7 @@
     <h2 id="display-text">ဟေး... မင်းအတွက် Surprise တစ်ခုရှိတယ်... ကြည့်မလား? 🎁</h2>
     <div id="btn-container">
         <button class="yes" id="yesBtn" onclick="handleYes()">Yes</button>
-        <button class="no" id="noBtn" onclick="handleNo()" onmouseover="moveNo()">No</button>
+        <button class="no" id="noBtn" onclick="handleNo()" onmouseover="moveNo()" ontouchstart="moveNo()">No</button>
     </div>
 </div>
 
@@ -120,42 +109,29 @@
         const text = document.getElementById('display-text');
         step++;
 
-        if (step === 2) { text.innerText = "ဒီဂိမ်းလေးကို အဆုံးထိဆော့ပေးမယ်လို့ ကတိပေးလား? 🤙"; } 
-        else if (step === 3) { text.innerText = "တကယ်တော့... မင်းက ကိုယ့်အတွက် အရမ်းထူးခြားတဲ့သူပါ ❤️"; } 
-        else if (step === 4) { text.innerText = "ကိုယ်တို့ နှစ်ယောက် အတူတူရှိတဲ့အချိန်တိုင်း စိတ်ချမ်းသာရတယ်... ဒါကိုရော သိလား? 😊"; }
-        else if (step === 5) { text.innerText = "စကားမစပ်... ကိုယ့်အပြုံးတွေကို ဘယ်သူဖန်တီးပေးတာလဲ သိလား? (Hint: မင်းပဲ! 🫵)"; }
-        else if (step === 6) { text.innerText = "မေးခွန်းတွေက ပိုပြီး စိတ်လှုပ်ရှားဖို့ ကောင်းလာပြီနော်... အဆင်သင့်ပဲလား?"; }
-        else if (step === 7) { text.innerText = "ကိုယ် မင်းကို တစ်ခုခု တောင်းဆိုချင်လို့... ရမလား?"; }
-        else if (step === 8) { 
-            text.innerText = "ဒီနှစ် Valentine မှာ ကိုယ့်ရဲ့ တစ်ဦးတည်းသော Valentine ဖြစ်ပေးနိုင်မလား? 💖";
-        }
-        else if (step === 9) { showFinal(); }
+        if (step === 2) text.innerText = "ဒီဂိမ်းလေးကို အဆုံးထိဆော့ပေးမယ်လို့ ကတိပေးလား? 🤙"; 
+        else if (step === 3) text.innerText = "တကယ်တော့... မင်းက ကိုယ့်အတွက် အရမ်းထူးခြားတဲ့သူပါ ❤️"; 
+        else if (step === 4) text.innerText = "ကိုယ်တို့ နှစ်ယောက် အတူတူရှိတဲ့အချိန်တိုင်း စိတ်ချမ်းသာရတယ်... ဒါကိုရော သိလား? 😊"; 
+        else if (step === 5) text.innerText = "စကားမစပ်... ကိုယ့်အပြုံးတွေကို ဘယ်သူဖန်တီးပေးတာလဲ သိလား? (Hint: မင်းပဲ! 🫵)"; 
+        else if (step === 6) text.innerText = "မေးခွန်းတွေက ပိုပြီး စိတ်လှုပ်ရှားဖို့ ကောင်းလာပြီနော်... အဆင်သင့်ပဲလား?"; 
+        else if (step === 7) text.innerText = "ကိုယ် မင်းကို တစ်ခုခု တောင်းဆိုချင်လို့... ရမလား?"; 
+        else if (step === 8) text.innerText = "ဒီနှစ် Valentine မှာ ကိုယ့်ရဲ့ တစ်ဦးတည်းသော Valentine ဖြစ်ပေးနိုင်မလား? 💖"; 
+        else if (step === 9) showFinal();
     }
 
     function handleNo() {
-        // Logic to show a different alert based on the current step
-        if (step === 1) {
-            alert("အားအောင်လုပ်လိုက်ပါ... ခဏလေးပါပဲနော်! 😉");
-        } 
-        else if (step === 2) {
-            alert("ကတိမပေးရင် ရှေ့ဆက်လို့မရဘူးလေ... Yes ပဲနှိပ်ပါ! 🥺");
-        } 
-        else if (step === 3) {
-            alert("မထူးခြားဘူးလို့တော့ မပြောပါနဲ့... စိတ်မကောင်းဖြစ်သွားမယ်! ❤️");
-        }
-        else if (step === 4) {
-            alert("မသိရင် အခုသိအောင် ပြောပြနေတာလေ... ဟဲဟဲ!");
-        }
-        else if (step === 5) {
-            alert("မင်းမဟုတ်ရင် တခြားဘယ်သူရှိမှာလဲ? လိမ်မနေနဲ့နော်! 😂");
-        }
-        else if (step === 6) {
-            alert("အဆင်သင့်မဖြစ်လည်း ဖြစ်အောင်လုပ်ရမှာပဲ! ရှေ့ဆက်သွားရအောင်... 🚀");
-        }
-        else if (step === 7) {
-            alert("တောင်းဆိုတာကို မငြင်းပါနဲ့... နားထောင်ကြည့်ပါဦး! ✨");
-        }
-        else if (step >= 8) {
+        if (step < 8) {
+            const alerts = [
+                "အားအောင်လုပ်လိုက်ပါ... ခဏလေးပါပဲနော်! 😉",
+                "ကတိမပေးရင် ရှေ့ဆက်လို့မရဘူးလေ... Yes ပဲနှိပ်ပါ! 🥺",
+                "မထူးခြားဘူးလို့တော့ မပြောပါနဲ့... ❤️",
+                "မသိရင် အခုသိအောင် ပြောပြနေတာလေ!",
+                "မင်းမဟုတ်ရင် တခြားဘယ်သူရှိမှာလဲ? 😂",
+                "အဆင်သင့်မဖြစ်လည်း ဖြစ်အောင်လုပ်ရမှာပဲ! 🚀",
+                "တောင်းဆိုတာကို မငြင်းပါနဲ့... နားထောင်ကြည့်ပါဦး! ✨"
+            ];
+            alert(alerts[step-1]);
+        } else {
             alert("မိသွားပြီ! No လို့ နှိပ်လို့မရတော့ဘူးလေ... Yes ပဲ ရှိတော့တယ်! 😜❤️");
         }
     }
@@ -163,12 +139,15 @@
     function moveNo() {
         if (step >= 8) {
             const noBtn = document.getElementById('noBtn');
-            const padding = 50; 
+            const padding = 80; // Large padding to keep it far away from edges
+            
+            // Calculate boundaries based on current visible window
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
             const maxY = window.innerHeight - noBtn.offsetHeight - padding;
 
-            const randomX = Math.floor(Math.random() * (maxX - padding)) + padding;
-            const randomY = Math.floor(Math.random() * (maxY - padding)) + padding;
+            // Generate coordinates within the safe interior area
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
             
             noBtn.style.position = 'fixed';
             noBtn.style.left = randomX + 'px';
@@ -182,7 +161,6 @@
         heart.innerHTML = '❤️';
         heart.style.left = Math.random() * 100 + 'vw';
         heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
-        heart.style.opacity = Math.random() * 0.5 + 0.5;
         document.body.appendChild(heart);
         setTimeout(() => heart.remove(), 5000);
     }
